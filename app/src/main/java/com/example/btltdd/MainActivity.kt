@@ -1,153 +1,79 @@
 package com.example.btltdd
 
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.btltdd.ui.theme.BTLTDDTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // ✅ Bọc MaterialTheme để Material3 hoạt động ổn định
-            MaterialTheme {
-                Surface {
-                    BusinessCardScreen(
-                        name = "Nguyễn Viết Chiến Thắng",
-                        title = "Android Developer",
-                        phone = "0935367234",
-                        social = "fb:Nguyễn Thắng",
-                        email = "luckychannel530@gmail.com",
-                    )
-                }
+            BTLTDDTheme() {
+                DiceRollerApp()
             }
         }
     }
 }
 
+@Preview
 @Composable
-fun BusinessCardScreen(
-    name: String,
-    title: String,
-    phone: String,
-    social: String,
-    email: String,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
+fun DiceRollerApp() {
+    DiceWithButtonAndImage(
+        modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0E3B2E))
-            .padding(16.dp)
-    ) {
-        ProfileSection(
-            name = name,
-            title = title,
-            modifier = Modifier.align(Alignment.Center)
-        )
+            .wrapContentSize(Alignment.Center)
+    )
 
-        ContactSection(
-            phone = phone,
-            social = social,
-            email = email,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-        )
-    }
 }
 
 @Composable
-fun ProfileSection(
-    name: String,
-    title: String,
-    modifier: Modifier = Modifier
-) {
+fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
+    var result by remember { mutableStateOf(1) }
+
+    val imageResource = when (result) {
+        1 -> R.drawable.dice_1
+        2 -> R.drawable.dice_2
+        3 -> R.drawable.dice_3
+        4 -> R.drawable.dice_4
+        5 -> R.drawable.dice_5
+        else -> R.drawable.dice_6
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = name,
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.White
+        Image(
+            painter = painterResource(id = imageResource),
+            contentDescription = result.toString()
         )
-
-        Text(
-            text = title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF7DFFB2),
-            modifier = Modifier.padding(top = 6.dp)
-        )
-    }
-}
-
-@Composable
-fun ContactSection(
-    phone: String,
-    social: String,
-    email: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        ContactRow(icon = Icons.Filled.Phone, text = phone)
-        ContactRow(icon = Icons.Filled.Share, text = social)
-        ContactRow(icon = Icons.Filled.Email, text = email)
-    }
-}
-
-@Composable
-fun ContactRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    text: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color(0xFF7DFFB2),
-            modifier = Modifier.size(22.dp)
-        )
-        Spacer(modifier = Modifier.width(14.dp))
-        Text(text = text, color = Color.White, fontSize = 16.sp)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BusinessCardPreview() {
-    MaterialTheme {
-        BusinessCardScreen(
-            name = "Nguyễn Viết Chiến Thắng",
-            title = "Android Developer",
-            phone = "+84 912 345 678",
-            social = "@Nguyễn Viết Chiến Thắng DEV",
-            email = "luckychannel530@gmail.com"
-        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { result = (1..6).random() }) {
+            Text(stringResource(R.string.roll))
+        }
     }
 }
